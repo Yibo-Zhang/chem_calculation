@@ -1,4 +1,5 @@
 import numpy as np
+import py3Dmol
 
 class Compound(object):
 	def __init__(self,name=None):
@@ -30,6 +31,11 @@ class Compound(object):
 				np.concatenate((self._atomPos,coords))
 		self._atomNum += n_atoms
 
+	def _formate(self):
+		print('works')
+
+		pass
+
 	def add_xyz(self,filename):
 		pass
 	def z_rotate(self,theta):
@@ -46,4 +52,4 @@ class Compound(object):
 if __name__ == '__main__':
 	CuHHTP = Compound('CuHHTP')
 	CuHHTP.load_xyz('/Users/Bo/Desktop/new.xyz')
-	CuHHTP.head()
+	CuHHTP.formate()
