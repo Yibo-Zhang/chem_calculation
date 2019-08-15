@@ -33,7 +33,6 @@ class Compound(object):
 
 	def _formate(self):
 		print('works')
-
 		pass
 
 	def add_xyz(self,filename):
