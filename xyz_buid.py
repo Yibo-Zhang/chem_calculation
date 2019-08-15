@@ -1,5 +1,7 @@
 import numpy as np
 import py3Dmol
+import os, sys
+
 class Compound(object):
 	def __init__(self,name=None):
 		super(Compound,self).__init__()
@@ -55,10 +57,17 @@ class Compound(object):
 		xyzview.zoomTo()
 		xyzview.show()
 	def save(self,filename):
-		pass
-	def generate_nw(self):
-		pass
+		xyz = self._formate()
+		with open(filename,'w') as xyz_file:
+			xyz_file.write(xyz)
+
+	def generate_nw(self,filename):
+		path = "./{}".format(filename.split('.')[0])
+		os.mkdir(path);
+		self.save('./{}'.format(filename.split('.')[0])+'/'+filename)
+		nwfile = ''
 if __name__ == '__main__':
 	CuHHTP = Compound('CuHHTP')
 	CuHHTP.load_xyz('./new.xyz')
-	CuHHTP.visualize()
+	# CuHHTP.save('test.xyz')
+	CuHHTP.generate_nw('test.xyz')
