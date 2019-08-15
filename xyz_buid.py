@@ -1,6 +1,5 @@
 import numpy as np
 import py3Dmol
-
 class Compound(object):
 	def __init__(self,name=None):
 		super(Compound,self).__init__()
@@ -32,8 +31,12 @@ class Compound(object):
 		self._atomNum += n_atoms
 
 	def _formate(self):
-		print('works')
-		pass
+		xyz = str(self._atomNum) + '\n'
+		for row, coord in enumerate(self._atomPos):
+			# print (row,coord)
+			xyz = xyz + '\n' + self._atomNames[row] + '    '
+			xyz = xyz + '    '.join(str(num) for num in coord) 
+		return xyz
 
 	def add_xyz(self,filename):
 		pass
@@ -44,11 +47,18 @@ class Compound(object):
 	def head(self):
 		print(self._atomPos[:10])
 	def visualize(self):
-		pass
+		xyz = self._formate()
+		xyzview = py3Dmol.view(width=400,height=400)
+		xyzview.addModel(xyz,'xyz')
+		xyzview.setStyle({'stick':{}})
+		xyzview.setBackgroundColor('0xeeeeee')
+		xyzview.zoomTo()
+		xyzview.show()
 	def save(self,filename):
 		pass
-
+	def generate_nw(self):
+		pass
 if __name__ == '__main__':
 	CuHHTP = Compound('CuHHTP')
-	CuHHTP.load_xyz('/Users/Bo/Desktop/new.xyz')
-	CuHHTP.formate()
+	CuHHTP.load_xyz('./new.xyz')
+	CuHHTP.visualize()
