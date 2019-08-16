@@ -1,14 +1,14 @@
 echo
 
 memory stack 1000 mb heap 200 mb global 250 mb noverify
-start {}
-title "{}"
+start combo1
+title "combo1"
 
 charge 0
 
 geometry noautoz
   symmetry c1
-  load {}
+  load combo1.xyz
 end
 
 ################### 3-21g&LANL2TZ/pbe0

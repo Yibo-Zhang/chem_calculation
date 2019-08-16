@@ -62,12 +62,19 @@ class Compound(object):
 			xyz_file.write(xyz)
 
 	def generate_nw(self,filename):
-		path = "./{}".format(filename.split('.')[0])
+		cpw = os.path.abspath(os.path.dirname(__file__))
+		path = "./{}".format(filename)
 		os.mkdir(path);
-		self.save('./{}'.format(filename.split('.')[0])+'/'+filename)
-		nwfile = ''
+		self.save('./{}'.format(filename)+'/'+filename+'.xyz')
+		with open(cpw+'/energy-dft.nw','r') as nwfile:
+			nwcontent = nwfile.read().format(filename,filename,filename+'.xyz')
+		with open('./{}'.format(filename)+'/'+filename+'.nw','w') as nwfile:
+			nwfile.write(nwcontent)
+
+
 if __name__ == '__main__':
 	CuHHTP = Compound('CuHHTP')
 	CuHHTP.load_xyz('./new.xyz')
 	# CuHHTP.save('test.xyz')
-	CuHHTP.generate_nw('test.xyz')
+	CuHHTP.generate_nw('combo1')
+
