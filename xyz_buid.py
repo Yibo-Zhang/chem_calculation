@@ -1,6 +1,7 @@
 import numpy as np
 import py3Dmol
-import os, sys
+import os
+import sys
 
 class Compound(object):
 	def __init__(self,name=None):
@@ -9,7 +10,7 @@ class Compound(object):
 			self.name = name
 		self._atomNum = 0
 		self._atomNames = []
-		self._atomPos = []
+		self._atomPos = np.array([])
 	def load_xyz(self,filename):
 		with open(filename,'r') as xyz_file:
 			n_atoms = int(xyz_file.readline())
@@ -26,10 +27,10 @@ class Compound(object):
 			if line:
 				msg = ('Incorrect number of lines in input file.')
 				raise xyz_Error(msg)
-			if not self._atomPos:
+			if not self._atomPos.any():
 				self._atomPos = np.array(coords)
 			else:	
-				np.concatenate((self._atomPos,coords))
+				self._atomPos = np.vstack((self._atomPos,coords))
 		self._atomNum += n_atoms
 
 	def _formate(self):
@@ -76,5 +77,7 @@ if __name__ == '__main__':
 	CuHHTP = Compound('CuHHTP')
 	CuHHTP.load_xyz('./new.xyz')
 	# CuHHTP.save('test.xyz')
-	CuHHTP.generate_nw('combo1')
+	# CuHHTP.generate_nw('combo1')
+	CuHHTP.load_xyz('./ascorbic_acid.xyz')
+	CuHHTP.generate_nw('combo2')
 
