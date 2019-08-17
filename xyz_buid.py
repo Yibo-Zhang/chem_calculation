@@ -41,7 +41,7 @@ class Compound(object):
 			xyz = xyz + '    '.join(str(num) for num in coord) 
 		return xyz
 
-	def add_xyz(self,filename):
+	def add(self,object):
 		pass
 	def z_rotate(self,theta):
 		pass
@@ -71,6 +71,15 @@ class Compound(object):
 			nwcontent = nwfile.read().format(filename,filename,filename+'.xyz')
 		with open('./{}'.format(filename)+'/'+filename+'.nw','w') as nwfile:
 			nwfile.write(nwcontent)
+	def _get_info(self):
+		return self._atomNum, self._atomNames, self._atomPos
+	def add_molecule(self,molecule):
+		Num, Names, Pos = molecule._get_info()
+		self._atomNum += Num
+		self._atomNames.extend(Names)
+		self._atomPos = np.vstack((self._atomPos,Pos))
+
+
 
 
 if __name__ == '__main__':
@@ -78,6 +87,9 @@ if __name__ == '__main__':
 	CuHHTP.load_xyz('./new.xyz')
 	# CuHHTP.save('test.xyz')
 	# CuHHTP.generate_nw('combo1')
-	CuHHTP.load_xyz('./ascorbic_acid.xyz')
-	CuHHTP.generate_nw('combo2')
+	ascorbic_acid= Compound('ascorbic_acid')
+	ascorbic_acid.load_xyz('./ascorbic_acid.xyz')
+	CuHHTP.add_molecule(ascorbic_acid)
+	CuHHTP._formate()
+	CuHHTP.save('combo1.xyz')
 
