@@ -46,7 +46,8 @@ class Compound(object):
 	def z_rotate(self,theta):
 		pass
 	def translate(self,x=0,y=0,z=0):
-		pass
+		move = np.array([x,y,z])
+		self._atomPos += move
 	def head(self):
 		print(self._atomPos[:10])
 	def visualize(self):
@@ -90,6 +91,6 @@ if __name__ == '__main__':
 	ascorbic_acid= Compound('ascorbic_acid')
 	ascorbic_acid.load_xyz('./ascorbic_acid.xyz')
 	CuHHTP.add_molecule(ascorbic_acid)
-	CuHHTP._formate()
+	CuHHTP.translate(1,1,12)
 	CuHHTP.save('combo1.xyz')
 
