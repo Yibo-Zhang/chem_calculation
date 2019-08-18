@@ -63,7 +63,9 @@ class Compound(object):
 		with open(filename,'w') as xyz_file:
 			xyz_file.write(xyz)
 
-	def generate_nw(self,filename):
+	def generate_nw(self,filename=None):
+		if not filename:
+			filename = self.name
 		cpw = os.path.abspath(os.path.dirname(__file__))
 		path = "./{}".format(filename)
 		os.mkdir(path);
@@ -78,7 +80,11 @@ class Compound(object):
 		Num, Names, Pos = molecule._get_info()
 		self._atomNum += Num
 		self._atomNames.extend(Names)
-		self._atomPos = np.vstack((self._atomPos,Pos))
+		if not self._atomPos.any():
+			self._atomPos = Pos
+		else:	
+			self._atomPos = np.vstack((self._atomPos,Pos))
+		# self._atomPos = np.vstack((self._atomPos,Pos))
 
 
 
