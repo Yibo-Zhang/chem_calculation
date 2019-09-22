@@ -104,6 +104,15 @@ class Compound(object):
 		"""
 		axis = [0, 0, 1]
 		self._atomPos=np.dot(self._atomPos,self.rotation_matrix(axis, theta))
+	def x_rotate(self,theta):
+		axis = [1, 0, 0]
+		self._atomPos=np.dot(self._atomPos,self.rotation_matrix(axis, theta))
+	def y_rotate(self,theta):
+		"""
+		one lap is 2π.
+		"""
+		axis = [0, 1, 1]
+		self._atomPos=np.dot(self._atomPos,self.rotation_matrix(axis, theta))
 
 if __name__ == '__main__':
 	CuHHTP = Compound('CuHHTP')
