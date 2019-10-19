@@ -11,17 +11,19 @@ class Mulliken(object):
 		start_pattern = re.compile(r'Total Density - Mulliken Population Analysis')
 		end_pattern = re.compile(r'Atom       Charge   Shell Charges')
 		start_num = 0
-		end_num = 0
+		switch = False
 		with open(dir,'r') as nwoutput:
 			lines = nwoutput.readlines()
 			for n,i in enumerate(lines):
 				start_match = re.search(start_pattern,i)
 				if start_match:
 					start_num = n
+					switch = True
 				end_match = re.search(end_pattern,i)
-				if end_match:
+				if end_match and switch:
 					end_num = n
-			start_num += 6
+					switch = False
+			start_num += 5
 			end_num -= 1
 			self.structure = lines[start_num:end_num]
 	def get_structure(self,dir):
@@ -31,6 +33,8 @@ class Mulliken(object):
 		print(length)
 		for i in self.structure:
 			# print(i)
+			with open('/Users/yibo/Desktop/result','a') as f:
+				f.write(i)
 			words = i.split()
 			structure = structure + words[1]+ ' '*4
 			structure = structure + words[2]+ ' '*4
