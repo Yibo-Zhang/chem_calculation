@@ -30,39 +30,44 @@ class Mulliken(object):
 		self.load_mulliken(dir)
 		structure = ''
 		length = len(self.structure)
-		print(length)
+		current_atom_number = '1'
+		current_atom_charge = 0
+		current_atom = self.structure[0].split()[3]
 		for i in self.structure:
-			# print(i)
-			with open('/Users/yibo/Desktop/result','a') as f:
-				f.write(i)
 			words = i.split()
-			structure = structure + words[1]+ ' '*4
-			structure = structure + words[2]+ ' '*4
-			structure = structure + words[3]+ ' '*4
-			# structure = structure + '\n'
+			if words[2] == current_atom_number:
+				current_atom_charge += float(words[1])
+			else:
+				with open('/Users/yibo/Desktop/result','a') as f:
+					f.write(str(current_atom_number) + ' '*4 + current_atom + ' '*4 + str(current_atom_charge)+'\n')
+				current_atom = words[3]
+				current_atom_number = words[2]
+				current_atom_charge = float(words[1])
+		with open('/Users/yibo/Desktop/result','a') as f:
+			f.write(str(current_atom_number) + ' '*4 + current_atom + ' '*4 + str(current_atom_charge)+'\n')
 		name = dir.split('.')[0]
 		name +='.xyz'
-		# print(structure)
-	####### get energy
-	def get_energy(self,directory):
-		print(directory.split('/')[-2])
-		pattern = re.compile(r'DFT energy')
-		with open(directory,'r') as nwoutput:
-			line = nwoutput.readline()
-			while line:
-				if re.search(pattern,line):
-					print(line,end='\n')
-				line = nwoutput.readline()
-	def get_all_energy(self,dir):
-		from os import walk
-		pattern = re.compile(r'.out$')
-		outs = []
-		for root, dirs, files in walk(dir):
-			for i in files:
-				if re.search(pattern,i):
-					outs.append(root+'/'+i)
-		for dir in outs:
-			self.get_energy(dir)
+
+
+	# def get_energy(self,directory):
+	# 	print(directory.split('/')[-2])
+	# 	pattern = re.compile(r'DFT energy')
+	# 	with open(directory,'r') as nwoutput:
+	# 		line = nwoutput.readline()
+	# 		while line:
+	# 			if re.search(pattern,line):
+	# 				print(line,end='\n')
+	# 			line = nwoutput.readline()
+	# def get_all_energy(self,dir):
+	# 	from os import walk
+	# 	pattern = re.compile(r'.out$')
+	# 	outs = []
+	# 	for root, dirs, files in walk(dir):
+	# 		for i in files:
+	# 			if re.search(pattern,i):
+	# 				outs.append(root+'/'+i)
+	# 	for dir in outs:
+	# 		self.get_energy(dir)
 
 
 
