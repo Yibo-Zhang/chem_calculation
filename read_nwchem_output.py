@@ -63,21 +63,28 @@ class Output(object):
 		pattern = re.compile(r'.out$')
 		outs = []
 		for root, dirs, files in walk(dir):
-			# print(root)
-			# print(dirs)
-			# print(files)
 			for i in files:
 				if re.search(pattern,i):
 					outs.append(root+'/'+i)
 		for dir in outs:
 			self.get_energy(dir)
-
+      
+	def get_all_structure(self,dir):
+		from os import walk
+		pattern = re.compile(r'.out$')
+		outs = []
+		for root, dirs, files in walk(dir):
+			for i in files:
+				if re.search(pattern,i):
+					outs.append(root+'/'+i)
+		for dir in outs:
+			self.get_structure(dir)
 
 
 if __name__ == '__main__':
 	# dir = '/Users/Bo/Desktop/restat.out'
 	# nwOutPut = Output()
 	# nwOutPut.get_structure(dir)
-	dir = '/Users/Bo/Desktop/close_gradually'
+	dir = '/mnt/home/thrust4/yz1074/Transfer_Space'
 	nwOutPut = Output()
-	nwOutPut.get_all_energy(dir)
+	nwOutPut.get_all_structure(dir)
