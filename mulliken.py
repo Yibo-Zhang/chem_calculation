@@ -5,7 +5,7 @@ class Mulliken(object):
 		super(Mulliken,self).__init__()
 
 	####### get optimized structure
-	def load_mulliken(self,dir):
+	def get_structure(self,dir,title,start_pattern,end_pattern):
 		self.structure = []
 		# pattern = re.compile(r'Output coordinates in angstroms')
 		start_pattern = re.compile(r'Total Density - Mulliken Population Analysis')
@@ -26,28 +26,33 @@ class Mulliken(object):
 			start_num += 5
 			end_num -= 1
 			self.structure = lines[start_num:end_num]
-	def get_structure(self,dir):
-		self.load_mulliken(dir)
 		structure = ''
 		length = len(self.structure)
 		current_atom_number = '1'
 		current_atom_charge = 0
 		current_atom = self.structure[0].split()[3]
+		with open('/Users/Bo/Desktop/result','a') as f:
+			f.write(title+'\n\n')
 		for i in self.structure:
 			words = i.split()
 			if words[2] == current_atom_number:
 				current_atom_charge += float(words[1])
 			else:
-				with open('/Users/yibo/Desktop/result','a') as f:
+				with open('/Users/Bo/Desktop/result','a') as f:
 					f.write(str(current_atom_number) + ' '*4 + current_atom + ' '*4 + str(current_atom_charge)+'\n')
 				current_atom = words[3]
 				current_atom_number = words[2]
 				current_atom_charge = float(words[1])
-		with open('/Users/yibo/Desktop/result','a') as f:
+		with open('/Users/Bo/Desktop/result','a') as f:
 			f.write(str(current_atom_number) + ' '*4 + current_atom + ' '*4 + str(current_atom_charge)+'\n')
-		name = dir.split('.')[0]
-		name +='.xyz'
+	def get_all_charge(self,dir):
+		start_pattern = re.compile(r'Total Density - Mulliken Population Analysis')
+		end_pattern = re.compile(r'Atom       Charge   Shell Charges')
+		self.get_structure(dir,'-'*20+'\nTotal Density\n'+'-'*20,start_pattern,end_pattern)
 
+		start_pattern = re.compile(r'Spin Density - Mulliken Population Analysis')
+		end_pattern = re.compile(r'Atom       Charge   Shell Charges')
+		self.get_structure(dir,'\n'+'-'*20+'\nSpin Density\n'+'-'*20,start_pattern,end_pattern)
 
 	# def get_energy(self,directory):
 	# 	print(directory.split('/')[-2])
@@ -72,6 +77,6 @@ class Mulliken(object):
 
 
 if __name__ == '__main__':
-	dir = '/Users/yibo/Desktop/mulliken.out'
+	dir = '/Users/Bo/Desktop/mulliken.out'
 	Mulliken = Mulliken()
-	Mulliken.get_structure(dir)
+	Mulliken.get_all_charge(dir)
