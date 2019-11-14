@@ -13,6 +13,7 @@ class Output(object):
 		end_pattern = re.compile(r'Atomic Mass')
 		start_num = 0
 		end_num = 0
+		locker = False
 		with open(dir,'r') as nwoutput:
 			lines = nwoutput.readlines()
 			for n,i in enumerate(lines):
@@ -20,11 +21,15 @@ class Output(object):
 				if start_match:
 					start_num = n
 					self.begin_number +=1
+					locker = True
 				end_match = re.search(end_pattern,i)
 				if end_match:
 					end_num = n
 					self.end_number +=1
-				if self.begin_number and self.end_number and self.begin_number==self.end_number:
+				if self.begin_number and self.end_number and self.begin_number==self.end_number and locker:
+					print(start_num)
+					print(end_num)
+					locker = False
 					start_num += 4
 					end_num -= 1
 					self.structure = lines[start_num:end_num]
@@ -42,9 +47,8 @@ class Output(object):
 			structure = structure + words[5]+ ' '*4
 			structure = structure + '\n'
 		name = 'test'
-		with open(name+'_'+str(number)+'.xyz','a') as f:
+		with open('/Users/yibo/Desktop/trajectory/xyz/'+name+'_'+str(number)+'.xyz','a') as f:
 			f.write(structure)
 if __name__ == '__main__':
 	out = Output()
-	out.load_nwoutput('/Users/Bo/Desktop/trajectory/start.out')
-	
+	out.load_nwoutput('/Users/yibo/Desktop/trajectory/start.out')
