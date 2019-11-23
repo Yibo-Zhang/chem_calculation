@@ -1,3 +1,6 @@
+"""
+This script basically can move and add molecule
+"""
 import numpy as np
 import py3Dmol
 import os
