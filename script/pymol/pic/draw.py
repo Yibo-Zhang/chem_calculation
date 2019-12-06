@@ -9,8 +9,11 @@ pymol.util.cnc("all")
 as sticks
 set stick_h_scale, 1,
 set valence,0
-set stick_radius, 0.4, other,
-set sphere_scale, 1.4, mof, 
+
+set sphere_scale, 0.6, mof, 
+set stick_radius, 0.2,mof
+
 
 set stick_radius, 0.2, other,
 set sphere_transparency, 0.5
+set dash_radius, 0.0800
