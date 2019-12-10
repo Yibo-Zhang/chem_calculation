@@ -10,10 +10,10 @@ as sticks
 set stick_h_scale, 1,
 set valence,0
 
-set sphere_scale, 0.6, mof, 
+set sphere_scale, 0.7, mof, 
 set stick_radius, 0.2,mof
 
 
 set stick_radius, 0.2, other,
-set sphere_transparency, 0.5
+set sphere_transparency, 0.6
 set dash_radius, 0.0800
