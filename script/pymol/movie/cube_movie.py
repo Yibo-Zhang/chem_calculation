@@ -40,6 +40,7 @@ for i in range(istart,iend):
     pymol.cmd.set('sphere_scale',0.2)
     pymol.cmd.color('gray50','all')
     pymol.util.cnc("all")
+    set valence, 0
 
     # # plot the density difference
     # cube_file = cubeprefix+'.'+str(file_num+1).zfill(10)+'.cube'

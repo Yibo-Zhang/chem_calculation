@@ -2,3 +2,5 @@ test*
 combo*
 *.xyz
 *.pyc
+*.DS_Store
+

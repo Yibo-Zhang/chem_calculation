@@ -10,7 +10,7 @@ as sticks
 set stick_h_scale, 1,
 set valence,0
 
-set sphere_scale, 0.7, mof, 
+set sphere_scale, 0.8, mof, 
 set stick_radius, 0.2,mof
 
 
