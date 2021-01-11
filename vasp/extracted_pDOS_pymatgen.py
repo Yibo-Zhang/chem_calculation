@@ -40,13 +40,20 @@ else:
 # Cr_pdos_dxy_up = Cr_pdos[Orbital['dxy']][Spin['up']]
 
 # save to file
+import pandas as pd
+col =['energy']
+col.extend([i+'_'+j for i in pdos_list for j in spin])
 data_set = pd.DataFrame(pdos,columns=col)
+# add pdos 
+for i in pdos_list:
+    data_set[i] = data_set[i+'_up'] +data_set[i+'_down']
+# add total dos
+data_set['total'] = sum([data_set[i] for i in pdos_list])
 data_set.to_csv("data.csv",index=None)
-
 
 # save fig
 
-def save_fig(df,pdos_list):
+def save_fig(df,pdos_list):    
     try:
         os.makedirs('png')
     except OSError as e:
@@ -59,7 +66,13 @@ def save_fig(df,pdos_list):
         y_lable_2 = pdos_list[i]+'_'+'down'
         df.plot(x='energy',y=y_lable_2,legend=y_lable_2,ax=ax)
         ax.get_figure().savefig('./png/'+pdos_list[i]+'.png',dpi=150)
-
+    
+    for i in pdos_list:
+        ax = df.plot(x='energy',y=i,xlim=[-20,20],ylim=[-0.3,1.5],legend=i)
+        ax.get_figure().savefig('./png/'+i+'_total.png',dpi=150)
+    ax = df.plot(x='energy',y='total',xlim=[-20,20],ylim=[-0.3,3],legend='total')
+    ax.get_figure().savefig('./png/'+'total.png',dpi=150)
+    
 
 
 save_fig(data_set,pdos_list)
