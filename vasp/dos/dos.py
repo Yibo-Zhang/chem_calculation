@@ -5,19 +5,19 @@ from matplotlib import pyplot as plt
 import matplotlib.ticker as ticker
 
 #------------------ FONT_setup ----------------------
-font = {'family' : 'arial', 
+font = {'family' : 'arial',
     'color'  : 'black',
     'weight' : 'normal',
     'size' : 13.0,
     }
 
 #------------------- Data Read ----------------------
-with open("PDOS_Cr_SOC.dat","r") as reader:
+with open("CrN_DOS.dat","r") as reader:
 	legend = reader.readline()
 legends=legend.split()[1:]
 legends=[i.replace("_"," ") for i in legends]
 legend_s=tuple(legends)
-datas=np.loadtxt("PDOS_Cr_SOC.dat",dtype=np.float64,skiprows=1)
+datas=np.loadtxt("CrN_DOS.dat",dtype=np.float64,skiprows=1)
 
 #--------------------- PLOTs ------------------------
 axe = plt.subplot(111)
@@ -32,7 +32,7 @@ plt.xlim(( -40,  110)) # set y limits manually
 plt.ylim(0,2) # set y limits manually
 leg = plt.gca().get_legend()
 ltext = leg.get_texts()
-plt.setp(ltext, fontsize=font['size']) 
+plt.setp(ltext, fontsize=font['size'])
 fig = plt.gcf()
 fig.set_size_inches( 8, 6)
 plt.savefig('dos.png',dpi= 300)

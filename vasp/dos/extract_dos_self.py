@@ -1,100 +1,115 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
-with open('DOSCAR','r') as f:
-    line = f.readline()
-    print(line)
-    Number_of_Ions = int(line.split()[0])
-    if_PDOS = True if int(line.split()[2])==1 else False
-    for i in range(4):
-        print(f.readline())
-    infor_line = f.readline().split()
-    NDOS = int(infor_line[2])
-    Fermi_Energy = float(infor_line[3])
+def get_soc_dos():
+    with open('DOSCAR','r') as f:
+        line = f.readline()
+        Number_of_Ions = int(line.split()[0])
+        if_PDOS = True if int(line.split()[2])==1 else False
+        for i in range(4):
+            f.readline()
+        infor_line = f.readline().split()
+        NDOS = int(infor_line[2])
+        Fermi_Energy = float(infor_line[3])
 
-    print('Fermi_energy: ',Fermi_Energy)
-    print('NDOS:         ',NDOS)
+        print('Fermi_energy: ',Fermi_Energy)
+        print('NDOS:         ',NDOS)
+        total_dos = []
+        for i in range(NDOS):
+            line = f.readline().split()
+            total_dos.append(line)
 
-    total_DOS = []
-    for i in range(NDOS):
-        line = f.readline().split()
-        line = line[0:2]
-        total_DOS.append(line)
+        total_dos = np.array(total_dos).astype(float)
+        # 减去 费米能
+        total_dos[:,0] = total_dos[:,0] - Fermi_Energy
+    return total_dos
 
-    print(f.readline())
-    PDOS = []
-    pDOS_number = Number_of_Ions*9+1 if if_PDOS else Number_of_Ions*3+1
-    for i in range(NDOS):
-        line = f.readline().split()
-        line = line[0:pDOS_number]
-        PDOS.append(line)
+def get_atom_dos(index=1):
+    with open('DOSCAR','r') as f:
+        for i in range(5):
+            f.readline()
+        infor_line = f.readline().split()
+        NDOS = int(infor_line[2])
+        Fermi_Energy = float(infor_line[3])
+        line_number = NDOS+(index-1)*(NDOS+1)+1
+        for i in range(line_number):
+            f.readline()
+            
+        atom_dos = []
+        for i in range(NDOS):
+            line = f.readline().split()
+            atom_dos.append(line)
 
-    for i in range(10):
-        line = f.readline().split()
-        print(len(line))
+        atom_dos = np.array(atom_dos).astype(float)
+        # 减去 费米能
+        atom_dos[:,0] = atom_dos[:,0] - Fermi_Energy
+    return atom_dos
 
-total_DOS = np.array(total_DOS).astype(float)
-# 减去 费米能
-fermi_dos = np.array([Fermi_Energy,0]*NDOS).reshape(NDOS,2).astype(float)
-total_DOS = np.subtract(total_DOS,fermi_dos)
-
-
-
-PDOS = np.array(PDOS).astype(float)
-# 减去 费米能
-fermi_pdos = [Fermi_Energy]
-fermi_pdos.extend([0]*(9))
-fermi_pdos = np.array(fermi_pdos*NDOS).reshape(NDOS,10).astype(float)
-PDOS = np.subtract(PDOS,fermi_pdos)
-
-# show total_DOS
-def plot_DOS(total_DOS):
-    plt.figure(figsize=(8,4))
-    dos_plot = plt.plot(total_DOS[:,0],total_DOS[:,1],label='DOS')
-    plt.xlim((-20,20))
-    plt.xlabel('E-E(f) ev')
-    plt.ylabel('DOS')
+def draw_total_dos(dos_data):
+    plt.plot(dos_data[:,0],dos_data[:,1],label='total')
     plt.legend()
-    plt.savefig('total_DOS.png',dpi=300)
-
-def plot_pDOS_up_down(PDOS):
-
+    plt.xlabel('energy')
+    plt.ylabel('DOS')
+    plt.xlim(-20,20)
+    plt.ylim(0,2.5)
+    plt.savefig('total_dos.png',dpi=100)
+    plt.close()
+   
+def draw_pdos(dos_data):
     label_list = 's  p_y p_z p_x d_{xy} d_{yz} d_{z2-r2} d_{xz} d_{x2-y2}'.split()
-
     fig, axes = plt.subplots(
         nrows=3, ncols=3, sharex=True, sharey=True, figsize = (12,12)
     )
 
-    for i in range(1,10):
-        b = (i-1)%3
-        a = (i-1)//3
+    for i in range(9):
+        b = i%3
+        a = i//3
         ax = axes[a,b]
-        ax.plot(PDOS[:,0],PDOS[:,2*i-1],label=label_list[i-1]+'_up')
-        ax.plot(PDOS[:,0],PDOS[:,2*i],label=label_list[i-1]+'_down')
+        ax.plot(dos_data[:,0],dos_data[:,1+i*4],label=label_list[i])
         plt.xlim(-20,20)
-        plt.ylim(-0.2,0.5)
+        plt.ylim(0,1)
         ax.legend()
-        plt.savefig(label_list[i-1]+'.png',dpi=300)
-
-def plot_pDOS(PDOS):
-
-    label_list = 's  p_y p_z p_x d_{xy} d_{yz} d_{z2-r2} d_{xz} d_{x2-y2}'.split()
-
-    fig, axes = plt.subplots(
-        nrows=3, ncols=3, sharex=True, sharey=True, figsize = (12,12)
-    )
-
-    for i in range(5,10):
-        b = (i-1)%3
-        a = (i-1)//3
-        ax = axes[a,b]
-        ax.plot(PDOS[:,0],PDOS[:,i],label=label_list[i-1])
-        plt.xlim(-20,20)
-        plt.ylim(0,1.5)
-        ax.legend()
-        plt.savefig(label_list[i-1]+'_total.png',dpi=300)
+        plt.savefig('pdos.png',dpi=100)
+    plt.close()
 
 
-plot_DOS(total_DOS)
-plot_pDOS_up_down(PDOS)
-plot_pDOS(PDOS)
+      
+   
+def draw_pdos_direction_up_down(dos_data,direction='z',orbital='d_{xz}'):
+    orbital_list = 's  p_y p_z p_x d_{xy} d_{yz} d_{z2-r2} d_{xz} d_{x2-y2}'.split()
+    spin_list = 'up down'.split()
+    direction_list = 'x y z'.split()
+    orbital_index = orbital_list.index(orbital)
+    direction_index = direction_list.index(direction)
+    
+    total_dos = dos_data[:,orbital_index*4+1]
+    orbital_position = orbital_index*4+direction_index+2
+    orbital_dos = dos_data[:,orbital_position]
+    energy = dos_data[:,0]
+    up = (total_dos+orbital_dos)/2
+    down = (total_dos-orbital_dos)/2
+    
+    fig,ax = plt.subplots()
+    plt.ylabel('Energy')
+    plt.xlabel('DOS')
+    plt.plot(energy,up,label=orbital+'_'+direction+'_up')
+    plt.plot(energy,-down,label=orbital+'_'+direction+'_down')
+    plt.xlim(-20,20)
+    plt.ylim(-0.5,0.5)
+    
+    plt.legend()
+    plt.savefig(orbital+'_'+direction+'.png',dpi=100)
+    plt.close()
+    
+    
+if __name__ == "__main__":
+    total_dos = get_soc_dos()
+    Cr_dos = get_atom_dos()
+    draw_pdos(Cr_dos)
+    draw_pdos_direction_up_down(Cr_dos,direction='z',orbital='d_{z2-r2}')
+    draw_total_dos(total_dos)
+
+
+
+        
