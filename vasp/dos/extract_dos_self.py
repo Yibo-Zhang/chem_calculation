@@ -101,14 +101,39 @@ def draw_pdos_direction_up_down(dos_data,direction='z',orbital='d_{xz}'):
     plt.legend()
     plt.savefig(orbital+'_'+direction+'.png',dpi=100)
     plt.close()
+def draw_d_pdos(dos_data):
+    energy = dos_data[:,0]
+    total = dos_data[:,17] + dos_data[:,21] + dos_data[:,25] + dos_data[:,29] + dos_data[:,33]
+    z = dos_data[:,20] +  dos_data[:,24] + dos_data[:,28] + dos_data[:,32] + dos_data[:,36]
+    up = (total+z)/2
+    down = (total-z)/2
+    fig,ax = plt.subplots()
+    plt.ylabel('Energy')
+    plt.xlabel('DOS')
+    plt.plot(energy,up,label='d_up')
+    plt.plot(energy,-down,label='d_down')
+    plt.xlim(-10,10)
+    plt.ylim(-10,10)
+    plt.legend()
+    plt.savefig('d_up_down.png',dpi=100)
+    plt.close()
     
+    plt.plot(energy,total,label='d_total')
+    plt.xlim(-10,10)
+    plt.ylim(-10,10)
+    plt.legend()
+    plt.savefig('d_total.png',dpi=100)
+    plt.close()
     
 if __name__ == "__main__":
     total_dos = get_soc_dos()
     Cr_dos = get_atom_dos()
     draw_pdos(Cr_dos)
-    draw_pdos_direction_up_down(Cr_dos,direction='z',orbital='d_{z2-r2}')
+    orbital_list = 's  p_y p_z p_x d_{xy} d_{yz} d_{z2-r2} d_{xz} d_{x2-y2}'.split()
+    for i in orbital_list:
+      draw_pdos_direction_up_down(Cr_dos,direction='z',orbital=i)
     draw_total_dos(total_dos)
+    draw_d_pdos(Cr_dos)
 
 
 
