@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def get_soc_dos():
-    with open('DOSCAR','r') as f:
+def get_total_dos(doscar='./DOSCAR'):
+    with open(doscar,'r') as f:
         line = f.readline()
         Number_of_Ions = int(line.split()[0])
         if_PDOS = True if int(line.split()[2])==1 else False
@@ -25,8 +25,8 @@ def get_soc_dos():
         total_dos[:,0] = total_dos[:,0] - Fermi_Energy
     return total_dos
 
-def get_atom_dos(index=1):
-    with open('DOSCAR','r') as f:
+def get_atom_dos(doscar='./DOSCAR',index=1):
+    with open(doscar,'r') as f:
         for i in range(5):
             f.readline()
         infor_line = f.readline().split()
